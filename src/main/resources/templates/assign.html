@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Назначение</title>
+    <style>
+        :root {
+            --bg: #0d001a;
+            --card: rgba(25, 15, 60, 0.82);
+            --gold: #ffb74d;
+            --gold-dark: #ff8c00;
+            --text: #f0e6ff;
+            --border: #4a2c8a;
+            --shadow: 0 12px 40px rgba(255,183,77,0.22);
+        }
+
+        body {
+            margin:0;
+            padding:40px 20px;
+            background:var(--bg);
+            color:var(--text);
+            font-family:'Segoe UI',sans-serif;
+            min-height:100vh;
+        }
+
+        .form-card {
+            background:var(--card);
+            backdrop-filter:blur(14px);
+            border:1px solid var(--border);
+            border-radius:20px;
+            padding:3rem;
+            max-width:520px;
+            margin:0 auto;
+            box-shadow:var(--shadow);
+            text-align:center;
+        }
+
+        h1 {
+            color:var(--gold);
+            margin-bottom:2.2rem;
+            text-shadow:0 4px 20px rgba(255,183,77,0.4);
+        }
+
+        select {
+            width:100%;
+            padding:14px;
+            margin:1.2rem 0;
+            border:1px solid var(--border);
+            border-radius:10px;
+            background:rgba(255,255,255,0.05);
+            color:var(--text);
+            font-size:1.1rem;
+        }
+
+        select:focus {
+            outline:none;
+            border-color:var(--gold);
+            box-shadow:0 0 14px rgba(255,183,77,0.4);
+        }
+
+        button {
+            width:100%;
+            padding:1.4rem;
+            margin-top:1.8rem;
+            background:linear-gradient(45deg,var(--gold-dark),var(--gold));
+            border:none;
+            color:#0d001a;
+            font-size:1.3rem;
+            font-weight:600;
+            border-radius:12px;
+            cursor:pointer;
+            transition:all .3s;
+            box-shadow:var(--shadow);
+        }
+
+        button:hover {
+            transform:translateY(-5px);
+            box-shadow:0 20px 55px rgba(255,183,77,0.5);
+        }
+
+        .back {
+            display:block;
+            margin-top:2.8rem;
+            color:var(--gold);
+            font-size:1.2rem;
+            text-decoration:none;
+        }
+
+        .error {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+<div class="form-card">
+
+    <h1>Назначить студента на курс</h1>
+
+    <!-- Отображение ошибки если понадобится -->
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <form th:action="@{/assign}" method="post">
+
+        <!-- Студенты -->
+        <select name="studentId" required>
+            <option value="" disabled selected>Выберите студента</option>
+            <option th:each="s : ${students}"
+                    th:value="${s.id}"
+                    th:text="${s.firstName + ' ' + s.lastName}">
+            </option>
+        </select>
+
+        <!-- Курсы -->
+        <select name="courseId" required>
+            <option value="" disabled selected>Выберите курс</option>
+            <option th:each="c : ${courses}"
+                    th:value="${c.id}"
+                    th:text="${c.title}">
+            </option>
+        </select>
+
+        <button type="submit">Назначить</button>
+
+    </form>
+
+    <a th:href="@{/}" class="back">← На главную</a>
+
+</div>
+</body>
+</html>

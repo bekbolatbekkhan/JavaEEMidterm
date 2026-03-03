@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Студенты — Управление</title>
+    <style>
+        :root {
+            --bg-dark: #0d001a;
+            --card: rgba(25, 15, 60, 0.82);
+            --accent-gold: #ffb74d;
+            --accent-gold-dark: #ff8c00;
+            --danger: #ff5252;
+            --text-light: #f0e6ff;
+            --border: #4a2c8a;
+            --shadow: 0 12px 40px rgba(255,183,77,0.18);
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: var(--accent-gold);
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 0 4px 20px rgba(255,183,77,0.4);
+        }
+
+        .btn-add {
+            display: inline-block;
+            margin: 1.5rem 0;
+            padding: 0.9rem 1.8rem;
+            background: linear-gradient(45deg, var(--accent-gold-dark), var(--accent-gold));
+            color: #0d001a;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 50px rgba(255,183,77,0.45);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+            background: var(--card);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th {
+            background: rgba(255,183,77,0.18);
+            color: var(--accent-gold);
+            padding: 16px;
+            text-align: left;
+        }
+
+        td {
+            padding: 16px;
+            background: rgba(40,30,90,0.5);
+        }
+
+        tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        tr td:last-child  { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(211,47,47,0.6);
+        }
+
+        .back {
+            display: block;
+            margin: 3rem auto 0;
+            text-align: center;
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Список студентов</h1>
+
+<a href="/students/new" class="btn-add">Добавить студента</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Email</th>
+        <th>Адрес</th>
+        <th>Телефон</th>
+        <th>Дата рождения</th>
+        <th>Курсы</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Если есть студенты -->
+    <tr th:each="s : ${students}">
+        <td th:text="${s.id}"></td>
+        <td th:text="${s.firstName}"></td>
+        <td th:text="${s.lastName}"></td>
+        <td th:text="${s.email}"></td>
+        <td th:text="${s.profile?.address} ?: '-'"></td>
+        <td th:text="${s.profile?.phone} ?: '-'"></td>
+        <td th:text="${s.profile?.birthDate} ?: '-'"></td>
+        <td th:text="${#lists.size(s.courses)}"></td>
+        <td>
+            <button class="btn-delete" th:onclick="'confirmDelete(' + ${s.id} + ', \'' + ${s.firstName} + ' ' + ${s.lastName} + '\')'">
+                Удалить
+            </button>
+        </td>
+    </tr>
+
+    <!-- Если список пуст -->
+    <tr th:if="${#lists.isEmpty(students)}">
+        <td colspan="9" style="text-align:center; padding:1.5rem; color:#aaa;">
+            Студенты пока не добавлены
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/" class="back">← На главную</a>
+
+<script th:inline="javascript">
+    function confirmDelete(id, name) {
+        if (confirm('Удалить студента "' + name + '"?')) {
+            fetch('/api/students/' + id, { method: 'DELETE' })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Ошибка при удалении студента');
+                    }
+                })
+                .catch(() => alert('Ошибка соединения с сервером'));
+        }
+    }
+</script>
+
+</body>
+</html>

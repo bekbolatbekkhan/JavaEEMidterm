@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Новый курс</title>
+
+    <style>
+        :root {
+            --bg: #0d001a;
+            --card: rgba(25, 15, 60, 0.82);
+            --gold: #ffb74d;
+            --gold-dark: #ff8c00;
+            --text: #f0e6ff;
+            --border: #4a2c8a;
+            --shadow: 0 12px 40px rgba(255,183,77,0.22);
+        }
+
+        body {
+            margin:0;
+            padding:40px 20px;
+            background:var(--bg);
+            color:var(--text);
+            font-family:'Segoe UI',sans-serif;
+            min-height:100vh;
+        }
+
+        .form-card {
+            background:var(--card);
+            backdrop-filter:blur(14px);
+            border:1px solid var(--border);
+            border-radius:20px;
+            padding:3rem;
+            max-width:480px;
+            margin:0 auto;
+            box-shadow:var(--shadow);
+        }
+
+        h1 {
+            color:var(--gold);
+            text-align:center;
+            margin-bottom:2.2rem;
+            text-shadow:0 4px 20px rgba(255,183,77,0.4);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        input {
+            width:100%;
+            padding:14px;
+            border:1px solid var(--border);
+            border-radius:10px;
+            background:rgba(255,255,255,0.05);
+            color:var(--text);
+            font-size:1.1rem;
+        }
+
+        input:focus {
+            outline:none;
+            border-color:var(--gold);
+            box-shadow:0 0 14px rgba(255,183,77,0.4);
+        }
+
+        .error {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        button {
+            width:100%;
+            padding:1.3rem;
+            margin-top:1.5rem;
+            background:linear-gradient(45deg,var(--gold-dark),var(--gold));
+            border:none;
+            color:#0d001a;
+            font-size:1.3rem;
+            font-weight:600;
+            border-radius:12px;
+            cursor:pointer;
+            transition:all .3s;
+            box-shadow:var(--shadow);
+        }
+
+        button:hover {
+            transform:translateY(-5px);
+            box-shadow:0 20px 55px rgba(255,183,77,0.5);
+        }
+
+        .back {
+            display:block;
+            margin-top:2.5rem;
+            text-align:center;
+            color:var(--gold);
+            font-size:1.2rem;
+            text-decoration:none;
+        }
+    </style>
+</head>
+
+<body>
+<div class="form-card">
+
+    <h1>Создать новый курс</h1>
+
+    <form th:action="@{/courses}"
+          th:object="${course}"
+          method="post">
+
+        <div class="form-group">
+            <input th:field="*{title}"
+                   placeholder="Название курса"
+                   required />
+            <div class="error"
+                 th:if="${#fields.hasErrors('title')}"
+                 th:errors="*{title}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input th:field="*{credits}"
+                   type="number"
+                   min="1"
+                   placeholder="Количество кредитов"
+                   required />
+            <div class="error"
+                 th:if="${#fields.hasErrors('credits')}"
+                 th:errors="*{credits}">
+            </div>
+        </div>
+
+        <button type="submit">Добавить курс</button>
+
+    </form>
+
+    <a th:href="@{/courses}" class="back">← Назад к курсам</a>
+
+</div>
+</body>
+</html>
